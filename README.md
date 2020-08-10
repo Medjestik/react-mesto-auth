@@ -21,4 +21,4 @@
 HTML, CSS (Flex, Grid, BEM), JavaScript, ООП, WebPack, API, React
 
 ## Ссылка на проект 
-[]
+[https://medjestik.github.io/mesto-react]
