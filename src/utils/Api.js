@@ -1,4 +1,4 @@
-import {config} from './constants.js'
+import {config} from './utils.js'
 
 class Api {
     constructor(options) {
@@ -10,7 +10,6 @@ class Api {
         if (response.ok) {
           return response.json();
         } else {
-          console.log('_handleResponse rejection')
           return Promise.reject(response.statusText)
         }
     }
@@ -20,7 +19,7 @@ class Api {
             method: 'GET',
             headers: this.headers
         })
-        .then(this._handleResponse);  
+        .then(this._handleResponse)
     }
 
     getInitialCards() {

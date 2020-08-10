@@ -1,6 +1,8 @@
 {
   "name": "mesto-react",
   "version": "0.1.0",
+  "description": "Learning project",
+  "author": "Ivan Kostyulin",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",

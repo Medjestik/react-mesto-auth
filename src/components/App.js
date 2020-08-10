@@ -14,104 +14,101 @@ function App() {
 
     function handleCardClick(name, link) {
         setSelectedCard({
-            onClick: true, 
+            onShow: true, 
             name: name, 
             link: link
         });
-    }
+    };
 
     function handleEditAvatarClick() {
         setIsEditAvatarPopupOpen(true);
-    }
+    };
 
     function handleEditProfileClick() {
         setIsEditProfilePopupOpen(true);
-    }
+    };
 
     function handleAddPlaceClick() {
         setIsAddPlacePopupOpen(true);
-    }
+    };
 
     function closeAllPopups() {
         setIsEditAvatarPopupOpen(false);
         setIsEditProfilePopupOpen(false);
         setIsAddPlacePopupOpen(false);
-        setSelectedCard({
-            onClick: false, 
-            name: "", 
-            link: ""
+        setSelectedCard((selectedCard)=> {
+            return {...selectedCard, onShow: false}
         });
-    }
+    };
     
     return (
         <div className="page"> 
             <Header />
 
             <Main
-            onEditAvatar={handleEditAvatarClick} 
-            onEditProfile={handleEditProfileClick}
-            onAddPlace={handleAddPlaceClick}
-            onCardClick={handleCardClick}
+                onEditAvatar={handleEditAvatarClick} 
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onCardClick={handleCardClick}
             />
 
             <Footer />
 
             <ImagePopup
-            card={selectedCard}
-            onClose={closeAllPopups}
+                card={selectedCard}
+                onClose={closeAllPopups}
             >
             </ImagePopup>
 
             <PopupWithForm
-            title="Редактировать профиль"
-            name="profile"
-            isOpen={isEditProfilePopupOpen}
-            onClose={closeAllPopups}
-            >
-            <label className="popup__field">
-                <input className="popup__input popup__input_type_name" type="text" id="name" name="name" placeholder="Имя" minLength="2" maxLength="40" required pattern="[A-Za-zА-Яа-яЁё -]{1,}" />
-                <span className="popup__input-error" id="name-error"></span>
-            </label>
-            <label className="popup__field">
-                <input className="popup__input popup__input_type_job" type="text" id="job" name="job" placeholder="Занятие" minLength="2" maxLength="200" required />
-                <span className="popup__input-error" id="job-error"></span>
-            </label>
+                title="Редактировать профиль"
+                name="profile"
+                isOpen={isEditProfilePopupOpen}
+                onClose={closeAllPopups}
+                >
+                <label className="popup__field">
+                    <input className="popup__input popup__input_type_name" type="text" id="name" name="name" placeholder="Имя" minLength="2" maxLength="40" required pattern="[A-Za-zА-Яа-яЁё -]{1,}" />
+                    <span className="popup__input-error" id="name-error"></span>
+                </label>
+                <label className="popup__field">
+                    <input className="popup__input popup__input_type_job" type="text" id="job" name="job" placeholder="Занятие" minLength="2" maxLength="200" required />
+                    <span className="popup__input-error" id="job-error"></span>
+                </label>
             </PopupWithForm>
 
             <PopupWithForm
-            title="Новое место"
-            name="cards"
-            isOpen={isAddPlacePopupOpen}
-            onClose={closeAllPopups}
-            >
-            <label className="popup__field">
-                <input className="popup__input popup__input_type_title" type="text" id="title" name="name" placeholder="Название" minLength="1" maxLength="30" required />
-                <span className="popup__input-error" id="title-error"></span>
-            </label>
-            <label className="popup__field">
-                <input className="popup__input popup__input_type_link" type="url" id="link" name="link" placeholder="Ссылка на картинку" required />
-                <span className="popup__input-error" id="link-error"></span>
-            </label>
+                title="Новое место"
+                name="cards"
+                isOpen={isAddPlacePopupOpen}
+                onClose={closeAllPopups}
+                >
+                <label className="popup__field">
+                    <input className="popup__input popup__input_type_title" type="text" id="title" name="name" placeholder="Название" minLength="1" maxLength="30" required />
+                    <span className="popup__input-error" id="title-error"></span>
+                </label>
+                <label className="popup__field">
+                    <input className="popup__input popup__input_type_link" type="url" id="link" name="link" placeholder="Ссылка на картинку" required />
+                    <span className="popup__input-error" id="link-error"></span>
+                </label>
             </PopupWithForm>
 
             <PopupWithForm
-            title="Обновить аватар"
-            name="change-avatar"
-            isOpen={isEditAvatarPopupOpen}
-            onClose={closeAllPopups}
-            >
-            <label className="popup__field">
-                <input className="popup__input popup__input_type_avatar" type="url" id="link" name="avatar" placeholder="Ссылка на картинку" required />
-                <span className="popup__input-error" id="link-error"></span>
-            </label>
+                title="Обновить аватар"
+                name="change-avatar"
+                isOpen={isEditAvatarPopupOpen}
+                onClose={closeAllPopups}
+                >
+                <label className="popup__field">
+                    <input className="popup__input popup__input_type_avatar" type="url" id="link" name="avatar" placeholder="Ссылка на картинку" required />
+                    <span className="popup__input-error" id="link-error"></span>
+                </label>
             </PopupWithForm>
 
             <PopupWithForm
-            title="Вы уверены?"
-            name="delete-card"
-            >
+                title="Вы уверены?"
+                name="delete-card"
+                >
             </PopupWithForm>
-
         </div>
     )
 }
