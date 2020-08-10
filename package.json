@@ -2,6 +2,7 @@
   "name": "mesto-react",
   "version": "0.1.0",
   "description": "Learning project",
+  "homepage": "./",
   "author": "Ivan Kostyulin",
   "private": true,
   "dependencies": {
