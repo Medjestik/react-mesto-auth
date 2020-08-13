@@ -20,6 +20,7 @@ class Api {
             headers: this.headers
         })
         .then(this._handleResponse)
+        .catch(console.error('error'))
     }
 
     getInitialCards() {
@@ -27,7 +28,8 @@ class Api {
             method: 'GET',
             headers: this.headers
         })
-        .then(this._handleResponse);  
+        .then(this._handleResponse)
+        .catch(console.error('error'))  
     }
 
     editUserInfo(name, about) {
@@ -39,7 +41,8 @@ class Api {
                 about: about
               })
         })
-        .then(this._handleResponse);  
+        .then(this._handleResponse)
+        .catch(console.error('error'))
     }
 
     changeAvatar(url) {
@@ -50,7 +53,8 @@ class Api {
                 avatar: url
                 })
         })
-        .then(this._handleResponse);  
+        .then(this._handleResponse)
+        .catch(console.error('error'))  
     }
 
     addCard(name, link) {
@@ -62,7 +66,8 @@ class Api {
                 link: link
               })
         })
-        .then(this._handleResponse);  
+        .then(this._handleResponse)
+        .catch(console.error('error'))  
     }
 
     deleteCard(id) {
@@ -70,7 +75,8 @@ class Api {
             method: 'DELETE',
             headers: this.headers,
         })
-        .then(this._handleResponse);
+        .then(this._handleResponse)
+        .catch(console.error('error'))
     }
 
     putLike(id) {
@@ -78,7 +84,8 @@ class Api {
             method: 'PUT',
             headers: this.headers,
         })
-        .then(this._handleResponse);
+        .then(this._handleResponse)
+        .catch(console.error('error'))
     }
 
     removeLike(id) {
@@ -86,7 +93,8 @@ class Api {
             method: 'DELETE',
             headers: this.headers,
         })
-        .then(this._handleResponse);
+        .then(this._handleResponse)
+        .catch(console.error('error'))
     }
 }
 
