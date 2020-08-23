@@ -14,13 +14,18 @@ class Api {
         }
     }
 
+    _handleError (error) {
+        console.error(error)
+        return Promise.reject(error.message)
+      }
+
     getUserInfo() {
         return fetch(`${this.url}/users/me`, {
             method: 'GET',
             headers: this.headers
         })
         .then(this._handleResponse)
-        .catch(console.error('error'))
+        .catch(this._handleError);
     }
 
     getInitialCards() {
@@ -29,7 +34,7 @@ class Api {
             headers: this.headers
         })
         .then(this._handleResponse)
-        .catch(console.error('error'))  
+        .catch(this._handleError);
     }
 
     editUserInfo(name, about) {
@@ -39,10 +44,10 @@ class Api {
             body: JSON.stringify({
                 name: name,
                 about: about
-              })
+            })
         })
         .then(this._handleResponse)
-        .catch(console.error('error'))
+        .catch(this._handleError);
     }
 
     changeAvatar(url) {
@@ -54,7 +59,7 @@ class Api {
                 })
         })
         .then(this._handleResponse)
-        .catch(console.error('error'))  
+        .catch(this._handleError); 
     }
 
     addCard(name, link) {
@@ -67,7 +72,7 @@ class Api {
               })
         })
         .then(this._handleResponse)
-        .catch(console.error('error'))  
+        .catch(this._handleError);
     }
 
     deleteCard(id) {
@@ -76,7 +81,7 @@ class Api {
             headers: this.headers,
         })
         .then(this._handleResponse)
-        .catch(console.error('error'))
+        .catch(this._handleError);
     }
 
     putLike(id) {
@@ -85,7 +90,7 @@ class Api {
             headers: this.headers,
         })
         .then(this._handleResponse)
-        .catch(console.error('error'))
+        .catch(this._handleError);
     }
 
     removeLike(id) {
@@ -94,7 +99,7 @@ class Api {
             headers: this.headers,
         })
         .then(this._handleResponse)
-        .catch(console.error('error'))
+        .catch(this._handleError);
     }
 }
 
