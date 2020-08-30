@@ -73,6 +73,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, isLoading }) {
             onClose={onClose}
             onSubmit={handleSubmit}
             errorForm={errorForm}
+            inputValues={name && link}
             >
             <label className="popup__field">
                 <input

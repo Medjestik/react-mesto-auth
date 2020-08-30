@@ -1,4 +1,5 @@
 import React from 'react';
+import { Route } from 'react-router-dom';
 import Header from '../components/Header.js';
 import Main from '../components/Main.js';
 import Footer from '../components/Footer.js';
@@ -189,15 +190,17 @@ function App() {
             <div className="page">
                 <Header />
 
-                <Main
-                    onEditAvatar={handleEditAvatarClick} 
-                    onEditProfile={handleEditProfileClick}
-                    onAddPlace={handleAddPlaceClick}
-                    onCardClick={handleCardClick}
-                    cards={cards}
-                    handleCardLike={handleCardLike}
-                    handleCardDelete={handleDeleteCardClick}
-                />
+                <Route path="/">
+                    <Main
+                        onEditAvatar={handleEditAvatarClick} 
+                        onEditProfile={handleEditProfileClick}
+                        onAddPlace={handleAddPlaceClick}
+                        onCardClick={handleCardClick}
+                        cards={cards}
+                        handleCardLike={handleCardLike}
+                        handleCardDelete={handleDeleteCardClick}
+                    />
+                </Route>
 
                 <Footer />
 

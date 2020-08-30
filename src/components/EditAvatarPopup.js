@@ -21,6 +21,7 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, isLoading }) {
             isOpen={isOpen}
             onClose={onClose}
             onSubmit={handleSubmit}
+            inputValues={true}
             >
             <label className="popup__field">
                 <input 

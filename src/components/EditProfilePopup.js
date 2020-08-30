@@ -73,6 +73,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, isLoading }) {
             onClose={onClose}
             onSubmit={handleSubmit}
             errorForm={errorForm}
+            inputValues={name && description}
         >
         <label className="popup__field">
             <input 
