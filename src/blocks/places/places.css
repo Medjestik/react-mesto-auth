@@ -5,6 +5,7 @@
 @import url(__info/place__info.css);
 @import url(__likes-container/place__likes-container.css);
 @import url(__like-button/place__like-button.css);
+@import url(__like-caption/place__like-caption.css);
 @import url(__delete-button/place__delete-button.css);
 @import url(__delete-button/place__delete-button_disabled.css);
 @import url(__like-count/place__like-count.css);

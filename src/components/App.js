@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import Header from '../components/Header.js';
 import Main from '../components/Main.js';
 import Footer from '../components/Footer.js';
@@ -8,11 +8,18 @@ import EditProfilePopup from '../components/EditProfilePopup.js';
 import EditAvatarPopup from '../components/EditAvatarPopup.js';
 import AddPlacePopup from '../components/AddPlacePopup.js';
 import DeleteCardPopup from '../components/DeleteCardPopup.js';
+import Login from '../components/Login.js';
+import Register from '../components/Register.js';
+import ProtectedRoute from '../components/ProtectedRoute.js';
+import InfoTooltip from '../components/InfoTooltip.js';
+import * as auth from '../auth.js';
 import { api } from '../utils/api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 
 function App() {
 
+    const [loggedIn, setLoggedIn] = React.useState(false);
+    const [userEmail, setUserEmail] = React.useState('');
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
@@ -22,6 +29,79 @@ function App() {
     const [currentCard, setCurrentCard] = React.useState({});
     const [selectedCard, setSelectedCard] = React.useState({});
     const [cards, setCards] = React.useState([]);
+    const [infoTooltip, setInfoTooltip] = React.useState({ text: '', icon: '', isOpen: false });
+
+    const history = useHistory();
+
+    function handleRegister ({ email, password }) {
+        auth.register({ email, password })
+          .then((res) => {
+            if (res.data) {
+                setInfoTooltip({ text: 'Вы успешно зарегистрировались!', icon: 'success', isOpen: true });
+                history.push('/sign-in');
+            } 
+          })
+          .catch((err) => {
+            if (err.status === 400) {
+                setInfoTooltip({ text: 'Некорректно заполнено одно из полей!', icon: 'error', isOpen: true }); 
+            } else {
+                setInfoTooltip({ text: 'Что-то пошло не так! Попробуйте еще раз.', icon: 'error', isOpen: true });
+            }
+          });
+    }
+
+    function handleLogin ({ email, password }) {
+        auth.login({ email, password })
+          .then((data) => {
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+                tokenCheck();
+                setLoggedIn(true);
+            }
+          })
+          .catch((err) => {
+            if (err.status === 400) {
+                setInfoTooltip({ text: 'Не передано одно из полей!', icon: 'error', isOpen: true }); 
+            } else if (err.status === 401) {
+                setInfoTooltip({ text: 'Пользователь с таким email не найден!', icon: 'error', isOpen: true }); 
+            } else {
+                setInfoTooltip({ text: 'Что-то пошло не так! Попробуйте еще раз.', icon: 'error', isOpen: true });
+            }
+          });
+    }
+
+    function tokenCheck () {
+        let token = localStorage.getItem('token');
+        if (token) {
+          auth.getEmail({ token: token })
+            .then((res) => {
+              if (res.data) {
+                setLoggedIn(true);
+                setUserEmail(res.data.email);
+                history.push('/');
+              } else {
+                localStorage.removeItem('token');
+                setLoggedIn(false);
+                setUserEmail('');
+              }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+        }
+    }
+
+    React.useEffect(() => {
+        tokenCheck();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    function handleLogout () {
+        localStorage.removeItem('token');
+        setLoggedIn(false);
+        setUserEmail('');
+        history.push('sign-in');
+    }
 
     React.useEffect(() => {
         api.getUserInfo()
@@ -66,6 +146,7 @@ function App() {
         setSelectedCard((selectedCard)=> {
             return {...selectedCard, onShow: false}
         });
+        setInfoTooltip({ ...infoTooltip, isOpen: false });
     }
 
     React.useEffect(() => {
@@ -82,12 +163,18 @@ function App() {
         function handleEscClose(e) {
           if (e.key === "Escape") {
             closeAllPopups();
+            if (loggedIn) {
+                history.push('/');
+            }
           }
         }
     
         function closeByOverlay(e) {
           if (e.target.classList.contains('popup_opened')) {
             closeAllPopups();
+            if (loggedIn) {
+                history.push('/');
+            }
           }
         }
     
@@ -188,10 +275,24 @@ function App() {
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
-                <Header />
+                <Header 
+                    onLogout={handleLogout}
+                    userEmail={userEmail} 
+                    loggedIn={loggedIn}
+                />
 
-                <Route path="/">
-                    <Main
+                <Switch>
+                    <Route path="/sign-up" exact>
+                        <Register onRegister={handleRegister} />
+                    </Route>
+                    <Route path="/sign-in" exact>
+                        <Login onLogin={handleLogin} />
+                    </Route>
+
+                    <ProtectedRoute 
+                        component={Main}
+                        path="/"
+                        loggedIn={loggedIn}
                         onEditAvatar={handleEditAvatarClick} 
                         onEditProfile={handleEditProfileClick}
                         onAddPlace={handleAddPlaceClick}
@@ -200,7 +301,8 @@ function App() {
                         handleCardLike={handleCardLike}
                         handleCardDelete={handleDeleteCardClick}
                     />
-                </Route>
+
+                </Switch>
 
                 <Footer />
 
@@ -237,6 +339,14 @@ function App() {
                 currentCard={currentCard}
                 isLoading={isLoading}
                 />
+
+                <InfoTooltip
+                text={infoTooltip.text}
+                icon={infoTooltip.icon}
+                isOpen={infoTooltip.isOpen}
+                onClose={closeAllPopups}
+                />
+                
             </div>
         </CurrentUserContext.Provider>
     )

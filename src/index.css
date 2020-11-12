@@ -10,3 +10,5 @@
 @import url(./blocks/popup/__submit-button/_disabled/popup__submit-button_disabled.css);
 @import url(./blocks/places/places.css);
 @import url(./blocks/footer/footer.css);
+@import url(./blocks/auth/auth.css);
+@import url(./blocks/tooltip/tooltip.css);
