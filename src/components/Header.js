@@ -6,6 +6,27 @@ function Header({ onLogout, userEmail, loggedIn }) {
 
     const { pathname } = useLocation();
     const history = useHistory();
+    const [windowWidth, setWindowWidth] = React.useState(0);
+    const [showMenu, setShowMenu] = React.useState(false);
+  
+    React.useEffect(() => {
+      function resizeWindow (evt) {
+        setWindowWidth(evt.target.innerWidth);
+      }
+
+      window.addEventListener('resize', resizeWindow);
+
+      return () => {
+        window.removeEventListener('resize', resizeWindow);
+      }
+    }, []);
+  
+    React.useEffect(() => {
+        setWindowWidth(window.innerWidth);
+        if (windowWidth > 600) {
+            setShowMenu(false);
+        }
+    }, [windowWidth])
 
     const navButtons = [
         { from: '/sign-up', to: '/sign-in', text: 'Войти' },
@@ -22,23 +43,48 @@ function Header({ onLogout, userEmail, loggedIn }) {
         )
     }
 
-    function getAuthMenu () {
-          return (
-            <div className="header__auth">
-              <p className="header__auth-email">{userEmail}</p>
-              <button className="header__auth-nav" type="button" onClick={onLogout}>Выход</button>
-            </div>
+    function getAuthMenu (windowWidth) {
+        if (windowWidth > 600) { 
+            return (
+                <div className="header__auth">
+                    <p className="header__auth-email">{userEmail}</p>
+                    <button className="header__auth-nav header__auth-nav_type_logout" type="button" onClick={onLogout}>Выход</button>
+                </div>
           )
+        } else {
+                return (
+                    <div className="header__auth">
+                        {showMenu
+                        ? <button className="header__button header__button_menu_hide" type="button" onClick={() => setShowMenu(false)} />
+                        : <button className="header__button header__button_menu_show" type="button" onClick={() => setShowMenu(true)} />
+                        }
+                    </div>
+                ) 
+        }
     }
 
+    const mobileMenu = (
+        <>
+            <p className="header__auth-email header__auth-email_type_mobile">{userEmail}</p>
+            <button className="header__auth-nav header__auth-nav_type_logout" type="button" onClick={onLogout}>Выход</button>
+        </>
+      )
+
     return (
-        <header className="header">
-            <img className="header__logo" src={logo} alt="Логотип" />
-            {loggedIn
-                ? getAuthMenu()
-                : getNavButton(navButtons, pathname)
-            }       
-        </header>
+        <>
+            {showMenu && loggedIn && 
+                (
+                    <div className={`header__menu-mobile header__menu-mobile_type_${showMenu ? 'show' : 'hide'}`}>{mobileMenu}</div>
+                )
+            }
+            <header className="header">
+                <img className="header__logo" src={logo} alt="Логотип" />
+                {loggedIn
+                    ? getAuthMenu(windowWidth)
+                    : getNavButton(navButtons, pathname)
+                }       
+            </header>
+        </>
     );
   }
 

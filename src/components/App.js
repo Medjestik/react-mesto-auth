@@ -25,6 +25,7 @@ function App() {
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
     const [isDeleteCardPopupOpen, setIsDeleteCardPopupOpen] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
+    const [isRendering, setIsRendering] = React.useState(true);
     const [currentUser, setCurrentUser] = React.useState({});
     const [currentCard, setCurrentCard] = React.useState({});
     const [selectedCard, setSelectedCard] = React.useState({});
@@ -71,7 +72,7 @@ function App() {
     }
 
     function tokenCheck () {
-        let token = localStorage.getItem('token');
+        const token = localStorage.getItem('token');
         if (token) {
           auth.getEmail({ token: token })
             .then((res) => {
@@ -91,11 +92,6 @@ function App() {
         }
     }
 
-    React.useEffect(() => {
-        tokenCheck();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     function handleLogout () {
         localStorage.removeItem('token');
         setLoggedIn(false);
@@ -104,14 +100,50 @@ function App() {
     }
 
     React.useEffect(() => {
-        api.getUserInfo()
-        .then((data) => {
-            setCurrentUser(data);
-        })
-        .catch((err) => {
-            console.error(err);
-        });
+        tokenCheck();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    React.useEffect(() => {
+        if (loggedIn) {
+            Promise.all([api.getUserInfo(), api.getInitialCards()])
+            .then(([ userInfo, initialCards]) => {
+                setCurrentUser(userInfo);
+                setCards(initialCards);
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+            .finally(() => setIsRendering(false));
+        }
+    }, [loggedIn]);
+
+    React.useEffect(() => {
+        if (loggedIn) {
+            
+            function handleEscClose(e) {
+                if (e.key === "Escape") {
+                  closeAllPopups();
+                  history.push('/');
+                }
+            }
+          
+            function closeByOverlay(e) {
+                if (e.target.classList.contains('popup_opened')) {
+                  closeAllPopups();
+                  history.push('/');
+                }
+            }
+
+            document.addEventListener('keyup', handleEscClose);
+            document.addEventListener('click', closeByOverlay);
+      
+            return () => {
+            document.removeEventListener('keyup', handleEscClose);
+            document.removeEventListener('click', closeByOverlay);
+            }
+        }
+    })
 
     function handleCardClick(name, link) {
         setSelectedCard({
@@ -148,44 +180,6 @@ function App() {
         });
         setInfoTooltip({ ...infoTooltip, isOpen: false });
     }
-
-    React.useEffect(() => {
-        api.getInitialCards()
-        .then((data) => {
-            setCards(data);
-        })
-        .catch((error) => {
-            console.error(error)
-        })
-    }, []);
-
-    React.useEffect(() => {
-        function handleEscClose(e) {
-          if (e.key === "Escape") {
-            closeAllPopups();
-            if (loggedIn) {
-                history.push('/');
-            }
-          }
-        }
-    
-        function closeByOverlay(e) {
-          if (e.target.classList.contains('popup_opened')) {
-            closeAllPopups();
-            if (loggedIn) {
-                history.push('/');
-            }
-          }
-        }
-    
-        document.addEventListener('keyup', handleEscClose);
-        document.addEventListener('click', closeByOverlay);
-
-        return () => {
-          document.removeEventListener('keyup', handleEscClose);
-          document.removeEventListener('click', closeByOverlay);
-        }
-    })
 
     function handleCardLike(card) { 
         const isLiked = card.likes.some((like) => like._id === currentUser._id);
@@ -273,7 +267,8 @@ function App() {
     }
     
     return (
-        <CurrentUserContext.Provider value={currentUser}>
+        isRendering ? <div className="page__rendering"><p className="page__rendering_type_loading">Загрузка..</p></div>
+        :<CurrentUserContext.Provider value={currentUser}>
             <div className="page">
                 <Header 
                     onLogout={handleLogout}

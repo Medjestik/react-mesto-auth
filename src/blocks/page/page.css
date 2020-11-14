@@ -1,3 +1,6 @@
+@import url(__rendering/page__rendering.css);
+@import url(__rendering/_loading/page__rendering_type_loading.css);
+
 .page {
     margin: 0 auto;
     font-family: 'Inter', Arial, sans-serif;

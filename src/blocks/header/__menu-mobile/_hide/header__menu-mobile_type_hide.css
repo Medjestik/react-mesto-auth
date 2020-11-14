@@ -1,0 +1,15 @@
+.header__menu-mobile_type_hide {
+    animation: hide-menu 0.4s backwards;
+    height: auto;
+}
+
+@keyframes hide-menu {
+    from {
+        padding: 40px 0px;
+        height: auto;
+    }
+    to {
+        padding: 0px 0px;
+        height: 0px;
+    }
+}
