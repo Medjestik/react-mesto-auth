@@ -72,7 +72,7 @@ function Header({ onLogout, userEmail, loggedIn }) {
 
     return (
         <>
-            {showMenu && loggedIn && 
+            {loggedIn && 
                 (
                     <div className={`header__menu-mobile header__menu-mobile_type_${showMenu ? 'show' : 'hide'}`}>{mobileMenu}</div>
                 )

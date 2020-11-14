@@ -1,6 +1,6 @@
 .header__menu-mobile_type_hide {
-    animation: hide-menu 0.4s backwards;
-    height: auto;
+    animation: hide-menu 0.5s backwards;
+    height: 0px;
 }
 
 @keyframes hide-menu {

@@ -267,7 +267,8 @@ function App() {
     }
     
     return (
-        isRendering ? <div className="page__rendering"><p className="page__rendering_type_loading">Загрузка..</p></div>
+        isRendering && loggedIn 
+        ? <div className="page__rendering"><p className="page__rendering_type_loading">Загрузка..</p></div>
         :<CurrentUserContext.Provider value={currentUser}>
             <div className="page">
                 <Header 
